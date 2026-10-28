@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NMMS Online Test | ZPPS Ghordari</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans Devanagari", sans-serif;
+  background: #eef4ff;
+  color: #172554;
+}
+
+header {
+  background: linear-gradient(135deg, #064eaa, #5425a8);
+  color: white;
+  text-align: center;
+  padding: 28px 12px;
+}
+
+header h1 {
+  font-size: 27px;
+  margin: 8px 0;
+}
+
+header p {
+  font-size: 16px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 14px #cbd5e1;
+}
+
+h2 {
+  color: #1746a2;
+}
+
+button, select {
+  padding: 13px 17px;
+  border-radius: 9px;
+  border: none;
+  font-size: 16px;
+  margin: 5px 3px;
+}
+
+button {
+  background: #0759b5;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
+
+.start {
+  background: #078344;
+}
+
+.timer {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #fff4cc;
+  color: #a12424;
+  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.question {
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.7;
+}
+
+.option {
+  display: block;
+  background: #eff6ff;
+  padding: 13px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
+  cursor: pointer;
+}
+
+.option:has(input:checked) {
+  background: #dbeafe;
+  border-color: #2563eb;
+}
+
+.option input {
+  margin-right: 10px;
+  transform: scale(1.15);
+}
+
+.hidden {
+  display: none;
+}
+
+.correct {
+  color: #087443;
+  font-weight: bold;
+}
+
+.wrong {
+  color: #c62828;
+  font-weight: bold;
+}
+
+footer {
+  background: #172554;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  line-height: 1.8;
+}
+
+.small {
+  font-size: 14px;
+  color: #475569;
+}
+
+@media(max-width:480px) {
+  header h1 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .question {
+    font-size: 17px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="font-size:45px">🏫</div>
+  <h1>जि. प. प्रा. शाळा घोरदरी</h1>
+  <h2 style="color:white">NMMS ऑनलाइन सराव परीक्षा</h2>
+  <p>ज्ञान • सराव • यश</p>
+  <p>विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी!</p>
+</header>
+
+<div class="container">
+
+  <div class="card" id="welcome">
+    <h2>🎓 NMMS बुद्धिमत्ता चाचणी</h2>
+
+    <p>विद्यार्थ्यांनो, खालील सूचना वाचा.</p>
+
+    <ul>
+      <li>प्रत्येक प्रश्नाला चार पर्याय आहेत.</li>
+      <li>योग्य पर्याय निवडा.</li>
+      <li>प्रत्येक बरोबर उत्तरासाठी १ गुण मिळेल.</li>
+      <li>ही सराव परीक्षा आहे.</li>
+      <li>या नमुना परीक्षेत २० प्रश्न आहेत.</li>
+    </ul>
+
+    <label for="studentName">विद्यार्थ्याचे नाव:</label>
+    <input id="studentName"
+      placeholder="तुमचे नाव लिहा"
+      style="width:100%;padding:12px;margin:10px 0;border:1px solid #aaa;border-radius:8px">
+
+    <label for="className">इयत्ता:</label>
+    <select id="className">
+      <option>इयत्ता ८ वी</option>
+      <option>इयत्ता ७ वी</option>
+      <option>इयत्ता ६ वी</option>
+    </select>
+
+    <p><b>एकूण प्रश्न:</b> २०</p>
+    <p><b>वेळ:</b> ९० मिनिटे</p>
+
+    <button class="start" onclick="startTest()">
+      ▶ परीक्षा सुरू करा
+    </button>
+  </div>
+
+  <div id="exam" class="hidden">
+
+    <div class="timer">
+      ⏱️ उर्वरित वेळ: <span id="clock">90:00</span>
+    </div>
+
+    <div class="card">
+      <b id="studentInfo"></b>
+      <p id="progress"></p>
+      <div id="quiz"></div>
+
+      <button onclick="previousQuestion()">⬅ मागील</button>
+      <button onclick="nextQuestion()">पुढील ➡</button>
+      <button class="start" onclick="submitTest(false)">
+        परीक्षा पूर्ण करा
+      </button>
+    </div>
+
+  </div>
+
+  <div id="result" class="hidden">
+
+    <div class="card" style="text-align:center">
+      <h2>🎉 परीक्षेचा निकाल</h2>
+      <div id="resultDetails"></div>
+      <h2 id="score"></h2>
+      <p id="percentage"></p>
+      <p id="message"></p>
+      <button onclick="showReview()">📖 उत्तरे पाहा</button>
+      <button class="start" onclick="location.reload()">
+        🔄 पुन्हा परीक्षा द्या
+      </button>
+    </div>
+
+    <div id="review"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  <b>जि. प. प्रा. शाळा घोरदरी</b><br>
+  NMMS शैक्षणिक सराव उपक्रम<br>
+  विद्यार्थ्यांनी नियमित सराव करावा.
+</footer>
+
+<script>
+const questions = [
+{
+q:"1. संख्या मालिका पूर्ण करा: 2, 4, 6, 8, ?",
+o:["9","10","12","14"], a:1,
+e:"प्रत्येक वेळी २ मिळवले आहे. उत्तर १०."
+},
+{
+q:"2. गटात न बसणारे पद ओळखा.",
+o:["आंबा","केळी","गुलाब","सफरचंद"], a:2,
+e:"गुलाब हे फूल आहे. इतर फळे आहेत."
+},
+{
+q:"3. A, C, E, G, ?",
+o:["H","I","J","K"], a:1,
+e:"एक अक्षर सोडून पुढील अक्षर घेतले आहे. उत्तर I."
+},
+{
+q:"4. 3, 6, 12, 24, ?",
+o:["30","36","48","42"], a:2,
+e:"प्रत्येक संख्येला २ ने गुणले आहे. उत्तर ४८."
+},
+{
+q:"5. सोमवारनंतर तिसरा दिवस कोणता?",
+o:["मंगळवार","बुधवार","गुरुवार","शुक्रवार"], a:2,
+e:"मंगळवार पहिला, बुधवार दुसरा, गुरुवार तिसरा."
+},
+{
+q:"6. 5 : 25 :: 7 : ?",
+o:["14","35","42","49"], a:3,
+e:"५ चा वर्ग २५. त्याचप्रमाणे ७ चा वर्ग ४९."
+},
+{
+q:"7. 1, 4, 9, 16, ?",
+o:["20","25","24","36"], a:1,
+e:"ही १², २², ३², ४², ५² अशी मालिका आहे."
+},
+{
+q:"8. जर CAT = DBU असेल, तर DOG = ?",
+o:["EPH","EOG","FPH","DPH"], a:0,
+e:"प्रत्येक अक्षराच्या पुढील अक्षराचा वापर केला आहे."
+},
+{
+q:"9. पूर्वेकडे तोंड करून उभे असताना डावीकडे वळल्यास कोणती दिशा?",
+o:["दक्षिण","उत्तर","पश्चिम","पूर्व"], a:1,
+e:"पूर्वेकडून डावीकडे वळल्यास उत्तर दिशा येते."
+},
+{
+q:"10. एका आठवड्यात किती दिवस असतात?",
+o:["५","६","७","८"], a:2,
+e:"एका आठवड्यात ७ दिवस असतात."
+},
+{
+q:"11. 10, 20, 30, 40, ?",
+o:["45","50","55","60"], a:1,
+e:"प्रत्येक वेळी १० मिळवले आहे."
+},
+{
+q:"12. पुस्तक : वाचन :: पेन : ?",
+o:["खेळणे","लिहिणे","धावणे","ऐकणे"], a:1,
+e:"पुस्तक वाचण्यासाठी आणि पेन लिहिण्यासाठी वापरतात."
+},
+{
+q:"13. खालीलपैकी विषम संख्या कोणती?",
+o:["12","18","21","24"], a:2,
+e:"२१ ही विषम संख्या आहे."
+},
+{
+q:"14. 100, 90, 80, 70, ?",
+o:["65","60","55","50"], a:1,
+e:"प्रत्येक वेळी १० वजा केले आहे."
+},
+{
+q:"15. राम हा श्यामचा भाऊ आहे. श्याम हा सीतेचा भाऊ आहे. राम आणि सीतेचे नाते काय?",
+o:["भाऊ-बहीण","वडील-मुलगी","आई-मुलगा","मित्र"], a:0,
+e:"राम आणि सीता भावंडे आहेत."
+},
+{
+q:"16. 4 × 6 + 2 = ?",
+o:["26","24","20","18"], a:0,
+e:"४ × ६ = २४; त्यात २ मिळवले तर २६."
+},
+{
+q:"17. Z, X, V, T, ?",
+o:["S","R","Q","P"], a:1,
+e:"प्रत्येक वेळी एक अक्षर मागे सोडले आहे. उत्तर R."
+},
+{
+q:"18. एका वर्षात साधारण किती महिने असतात?",
+o:["१०","११","१२","१३"], a:2,
+e:"एका वर्षात १२ महिने असतात."
+},
+{
+q:"19. 2, 5, 8, 11, ?",
+o:["12","13","14","15"], a:2,
+e:"प्रत्येक वेळी ३ मिळवले आहे. उत्तर १४."
+},
+{
+q:"20. खालीलपैकी वेगळा आकार कोणता?",
+o:["त्रिकोण","चौरस","वर्तुळ","आंबा"], a:3,
+e:"आंबा हा फळ आहे. इतर भौमितिक आकार आहेत."
+}
+];
+
+let current = 0;
+let answers = Array(questions.length).fill(null);
+let timeLeft = 90 * 60;
+let timerID = null;
+let submitted = false;
+let finalScore = 0;
+
+function startTest() {
+  const name = document.getElementById("studentName").value.trim();
+
+  if (!name) {
+    alert("कृपया विद्यार्थ्याचे नाव लिहा.");
+    return;
+  }
+
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("exam").classList.remove("hidden");
+
+  document.getElementById("studentInfo").textContent =
+    "विद्यार्थी: " + name + " | " +
+    document.getElementById("className").value;
+
+  renderQuestion();
+  timerID = setInterval(updateTimer, 1000);
+}
+
+function renderQuestion() {
+  const item = questions[current];
+
+  document.getElementById("progress").textContent =
+    "प्रश्न " + (current + 1) + " / " + questions.length;
+
+  let html = '<div class="question">' + item.q + '</div>';
+
+  item.o.forEach((option, index) => {
+    html += '<label class="option">' +
+      '<input type="radio" name="answer" value="' + index + '"' +
+      (answers[current] === index ? ' checked' : '') +
+      ' onchange="saveAnswer(' + index + ')">' +
+      option + '</label>';
+  });
+
+  document.getElementById("quiz").innerHTML = html;
+}
+
+function saveAnswer(index) {
+  answers[current] = index;
+}
+
+function nextQuestion() {
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    alert("ही शेवटची प्रश्नसंख्या आहे. निकालासाठी परीक्षा पूर्ण करा.");
+  }
+}
+
+function previousQuestion() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+}
+
+function updateTimer() {
+  if (submitted) return;
+
+  timeLeft--;
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  document.getElementById("clock").textContent =
+    String(minutes).padStart(2, "0") + ":" +
+    String(seconds).padStart(2, "0");
+
+  if (timeLeft <= 0) {
+    submitTest(true);
+  }
+}
+
+function submitTest(autoSubmit) {
+  if (submitted) return;
+
+  if (!autoSubmit &&
+      !confirm("तुम्हाला परीक्षा पूर्ण करून निकाल पाहायचा आहे का?")) {
+    return;
+  }
+
+  submitted = true;
+  clearInterval(timerID);
+
+  finalScore = 0;
+
+  questions.forEach((item, index) => {
+    if (answers[index] === item.a) {
+      finalScore++;
+    }
+  });
+
+  document.getElementById("exam").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("resultDetails").innerHTML =
+    "<p>विद्यार्थी: " +
+    escapeHTML(document.getElementById("studentName").value) +
+    "</p><p>एकूण प्रश्न: " + questions.length + "</p>" +
+    "<p>बरोबर उत्तरे: " + finalScore + "</p>" +
+    "<p>चुकीची किंवा न सोडवलेली उत्तरे: " +
+    (questions.length - finalScore) + "</p>";
+
+  document.getElementById("score").textContent =
+    "तुमचे गुण: " + finalScore + " / " + questions.length;
+
+  document.getElementById("percentage").textContent =
+    "टक्केवारी: " +
+    ((finalScore / questions.length) * 100).toFixed(1) + "%";
+
+  document.getElementById("message").textContent =
+    finalScore >= 18 ? "🌟 उत्कृष्ट कामगिरी!" :
+    finalScore >= 14 ? "👏 खूप छान! सराव सुरू ठेवा." :
+    "💪 अधिक सराव करा. तुम्ही नक्की यशस्वी व्हाल!";
+}
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, function(ch) {
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[ch];
+  });
+}
+
+function showReview() {
+  let html = '<div class="card"><h2>📖 उत्तरपत्रिका</h2>';
+
+  questions.forEach((item, index) => {
+    const correct = answers[index] === item.a;
+
+    html += '<div class="card">' +
+      '<p><b>' + item.q + '</b></p>' +
+      '<p class="' + (correct ? 'correct' : 'wrong') + '">' +
+      (correct ? '✅ बरोबर उत्तर' : '❌ चुकीचे / अनुत्तरित') +
+      '</p>' +
+      '<p>तुमचे उत्तर: ' +
+      (answers[index] === null ? 'उत्तर दिले नाही' :
+      item.o[answers[index]]) + '</p>' +
+      '<p class="correct">योग्य उत्तर: ' + item.o[item.a] + '</p>' +
+      '<p>स्पष्टीकरण: ' + item.e + '</p>' +
+      '</div>';
+  });
+
+  html += '</div>';
+  document.getElementById("review").innerHTML = html;
+  document.getElementById("review").scrollIntoView();
+}
+</script>
+
+</body>
+</html>
