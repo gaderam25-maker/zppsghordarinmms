@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZPPS Ghordari NMMS Test</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #eef5ff;
+  margin: 0;
+  color: #172554;
+}
+header {
+  background: #0757a6;
+  color: white;
+  text-align: center;
+  padding: 22px 10px;
+}
+header h2 { margin: 5px; }
+.container {
+  max-width: 650px;
+  margin: 20px auto;
+  padding: 15px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px #ccd8e8;
+}
+.question { font-size: 18px; font-weight: bold; }
+label {
+  display: block;
+  background: #f0f6ff;
+  padding: 12px;
+  margin: 9px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button {
+  background: #087443;
+  color: white;
+  border: none;
+  padding: 13px 22px;
+  border-radius: 9px;
+  font-size: 17px;
+  cursor: pointer;
+}
+#result {
+  font-size: 21px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #475569;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h2>🏫 जि. प. प्रा. शाळा घोरदरी</h2>
+  <h3>NMMS बुद्धिमत्ता सराव परीक्षा</h3>
+  <p>विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी!</p>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>🧠 बुद्धिमत्ता चाचणी</h2>
+    <p>प्रत्येक प्रश्नासाठी योग्य पर्याय निवडा.</p>
+    <p id="progress"></p>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="card" style="text-align:center">
+    <button onclick="checkAnswers()">निकाल पहा</button>
+    <div id="result"></div>
+    <button onclick="location.reload()" style="margin-top:12px">
+      पुन्हा टेस्ट द्या
+    </button>
+  </div>
+</div>
+
+<footer>
+  शैक्षणिक उपक्रम | ZPPS Ghordari
+</footer>
+
+<script>
+const questions = [
+ {
+  q:"1. पुढील संख्या ओळखा: 2, 4, 6, 8, ?",
+  options:["9","10","12","14"],
+  answer:1
+ },
+ {
+  q:"2. गटात न बसणारा शब्द निवडा.",
+  options:["आंबा","केळी","गुलाब","सफरचंद"],
+  answer:2
+ },
+ {
+  q:"3. A, C, E, G, ?",
+  options:["H","I","J","K"],
+  answer:1
+ },
+ {
+  q:"4. 5 × 4 = किती?",
+  options:["15","20","25","30"],
+  answer:1
+ },
+ {
+  q:"5. सोमवारनंतर तिसरा दिवस कोणता?",
+  options:["मंगळवार","बुधवार","गुरुवार","शुक्रवार"],
+  answer:2
+ }
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((item, i) => {
+  let html = `<div class="card">
+  <div class="question">${item.q}</div>`;
+
+  item.options.forEach((option, j) => {
+    html += `<label>
+      <input type="radio" name="q${i}" value="${j}">
+      ${option}
+    </label>`;
+  });
+
+  html += `</div>`;
+  quiz.innerHTML += html;
+});
+
+document.getElementById("progress").textContent =
+  "एकूण प्रश्न: " + questions.length;
+
+function checkAnswers() {
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(
+      'input[name="q' + i + '"]:checked'
+    );
+
+    if (!selected) {
+      unanswered++;
+    } else if (Number(selected.value) === item.answer) {
+      score++;
+    }
+  });
+
+  document.getElementById("result").innerHTML =
+    "तुमचे गुण: " + score + " / " + questions.length +
+    "<br>" + (unanswered ? "अनुत्तरित प्रश्न: " + unanswered :
+    "सर्व प्रश्न सोडवले!") +
+    "<br>" + (score === questions.length ?
+    "🎉 उत्कृष्ट कामगिरी!" : "💪 आणखी सराव करा!");
+}
+</script>
+
+</body>
+</html>
